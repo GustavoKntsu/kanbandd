@@ -1,11 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
+    <!-- Metadados da página e folha de estilo principal -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kanban Drag and Drop</title>
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
-    
+    <!-- Container principal da aplicação -->
+    <main class="app" aria-label="Aplicação de Quadro Kanban">
+        <!-- Cabeçalho com título e formulário rápido de criação de cards -->
+        <header class="app__header">
+            <div>
+                <h1>Quadro Kanban</h1>
+                <p>Arraste cards entre colunas, edite títulos e adicione novas colunas.</p>
+            </div>
+            <form id="new-card-form" class="new-card-form" autocomplete="off">
+                <label for="new-card-text" class="sr-only">Texto do novo card</label>
+                <input id="new-card-text" name="cardText" type="text" maxlength="120" placeholder="Novo card para 'A fazer'" required>
+                <button type="submit">Criar card</button>
+            </form>
+        </header>
+
+        <!-- Área dinâmica onde as colunas/cards são renderizados via JavaScript -->
+        <section class="board-wrapper" aria-label="Colunas do Kanban">
+            <div id="board" class="board" role="list"></div>
+            <button id="add-column-button" class="add-column-button" type="button">+ Adicionar coluna</button>
+        </section>
+    </main>
+
+    <!-- Ponto de entrada da aplicação (módulo principal) -->
+    <script type="module" src="./js/main.js"></script>
 </body>
 </html>
