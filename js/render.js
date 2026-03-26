@@ -15,9 +15,12 @@ function renderColumn(column) {
     const cardsHtml = column.cards.map(renderCard).join("");
 
     return `
-        <section class="column" data-column-id="${column.id}" aria-label="Coluna ${column.title}">
+        <section class="column" data-column-id="${column.id}" draggable="true" aria-label="Coluna ${column.title}">
             <header class="column__header">
-                <h2 class="column__title" data-column-title-id="${column.id}" tabindex="0" title="Dê dois cliques para editar">${column.title}</h2>
+                <div class="column__title-wrapper">
+                    <h2 class="column__title" data-column-title-id="${column.id}" tabindex="0" title="Dê dois cliques para editar">${column.title}</h2>
+                    <button class="column__delete" type="button" data-delete-column-id="${column.id}" aria-label="Deletar coluna" title="Deletar coluna">✕</button>
+                </div>
                 <span class="column__count">${column.cards.length} card(s)</span>
             </header>
             <div class="column__cards" data-column-drop-id="${column.id}">
