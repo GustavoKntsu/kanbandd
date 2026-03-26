@@ -1,0 +1,273 @@
+:root {
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --text: #1d2433;
+    --muted: #6b7384;
+    --primary: #3b82f6;
+    --primary-strong: #2463c9;
+    --border: #d9dfec;
+    --column-bg: #eef2ff;
+    --card-bg: #ffffff;
+    --danger: #ef4444;
+    --shadow: 0 10px 30px rgba(29, 36, 51, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+h1,
+h2,
+p {
+    margin: 0;
+}
+
+.app {
+    min-height: 100vh;
+    padding: 1rem;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 1rem;
+}
+
+.app__header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    display: grid;
+    gap: 0.75rem;
+}
+
+.app__header p {
+    color: var(--muted);
+    margin-top: 0.4rem;
+}
+
+.new-card-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.new-card-form input,
+button,
+.edit-input {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.95rem;
+}
+
+.new-card-form input {
+    flex: 1 1 220px;
+    min-width: 160px;
+}
+
+button {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: transparent;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--primary-strong);
+}
+
+.board-wrapper {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 0.8rem;
+    min-height: 0;
+}
+
+.board {
+    display: flex;
+    gap: 0.8rem;
+    overflow-x: auto;
+    padding: 0.2rem;
+}
+
+.column {
+    min-width: 270px;
+    max-width: 320px;
+    background: var(--column-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.8rem;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 0.7rem;
+}
+
+.column__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+}
+
+.column__title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.column__title {
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.2rem 0.3rem;
+    border-radius: 6px;
+}
+
+.column__delete {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    padding: 0.2rem 0.4rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.column__delete:hover {
+    opacity: 1;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.column__title:focus-visible,
+.card__text:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.column__count {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.column__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-height: 6rem;
+    transition: background-color 0.2s ease;
+}
+
+/* Placeholder visual para drop zone quando um card está sendo arrastado */
+.column__cards--drop-active {
+    background-color: rgba(59, 130, 246, 0.08);
+    border: 2px dashed rgba(59, 130, 246, 0.35);
+    border-radius: 8px;
+    padding: 0.4rem;
+}
+
+.column--drag-over {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.column--dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.7rem;
+    box-shadow: 0 4px 14px rgba(29, 36, 51, 0.08);
+    cursor: grab;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:active {
+    cursor: grabbing;
+    /* Efeito de levitação: escala leve + shadow mais pronunciado */
+    transform: scale(1.05) rotate(3deg);
+    box-shadow: 0 12px 24px rgba(29, 36, 51, 0.18), 0 0 0 1px rgba(59, 130, 246, 0.1);
+}
+
+.card--dragging {
+    opacity: 0.45;
+    /* Mantém transformação durante o arrasto */
+    transform: scale(1.05) rotate(3deg);
+}
+
+.card__text {
+    margin: 0;
+    line-height: 1.4;
+    word-break: break-word;
+    border-radius: 4px;
+}
+
+.card__actions {
+    margin-top: 0.6rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.card__delete {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    padding: 0.25rem 0.55rem;
+    font-size: 0.8rem;
+}
+
+.card__delete:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.add-column-button {
+    justify-self: start;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+}
+
+@media (min-width: 860px) {
+    .app {
+        padding: 1.2rem 1.5rem;
+    }
+
+    .app__header {
+        grid-template-columns: 1fr auto;
+        align-items: end;
+    }
+
+    .new-card-form {
+        width: min(420px, 100%);
+    }
+}
+
+@media (max-width: 559px) {
+    .new-card-form button {
+        width: 100%;
+    }
+
+    .column {
+        min-width: 86vw;
+    }
+}
