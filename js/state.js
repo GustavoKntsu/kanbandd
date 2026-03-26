@@ -153,6 +153,15 @@ export function createStore() {
         }
     }
 
+    // Remove uma coluna inteira (com todos os seus cards).
+    function deleteColumn(columnId) {
+        const columnIndex = state.columns.findIndex((col) => col.id === columnId);
+        if (columnIndex !== -1) {
+            state.columns.splice(columnIndex, 1);
+            notify();
+        }
+    }
+
     // Move um card da coluna de origem para a coluna de destino.
     function moveCard(cardId, targetColumnId) {
         if (!cardId || !targetColumnId) {
@@ -182,15 +191,30 @@ export function createStore() {
         notify();
     }
 
+    // Reordena colunas: move coluna de posição sourceIndex para targetIndex.
+    function reorderColumns(sourceIndex, targetIndex) {
+        if (sourceIndex < 0 || sourceIndex >= state.columns.length ||
+            targetIndex < 0 || targetIndex >= state.columns.length ||
+            sourceIndex === targetIndex) {
+            return;
+        }
+
+        const [movedColumn] = state.columns.splice(sourceIndex, 1);
+        state.columns.splice(targetIndex, 0, movedColumn);
+        notify();
+    }
+
     // API pública do store.
     return {
         getState,
         subscribe,
         addColumn,
         renameColumn,
+        deleteColumn,
         addCard,
         updateCardText,
         removeCard,
-        moveCard
+        moveCard,
+        reorderColumns,
     };
 }
