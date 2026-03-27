@@ -45,6 +45,6 @@ Opcional com VS Code:
 
 ## Participantes do código:
 
--Gustavo Kenji N. Tsukioka
--Chrystian Alexandre Cardoso Tokio
--Callebe Mendes Ribeiro
+-Gustavo Kenji N. Tsukioka.
+-Chrystian Alexandre Cardoso Tokio.
+-Callebe Mendes Ribeiro.
