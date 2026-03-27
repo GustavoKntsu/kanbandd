@@ -10,15 +10,18 @@
 <body>
     <!-- Container principal da aplicação -->
     <main class="app" aria-label="Aplicação de Quadro Kanban">
-        <!-- Cabeçalho com título e formulário rápido de criação de cards -->
+        <!-- Cabeçalho com título, botão de tema e formulário rápido de criação de cards -->
         <header class="app__header">
-            <div>
-                <h1>Quadro Kanban</h1>
-                <p>Arraste cards entre colunas, edite títulos e adicione novas colunas.</p>
+            <div class="app__header-top">
+                <div>
+                    <h1>Quadro Kanban</h1>
+                    <p>Arraste cards entre colunas, edite títulos e adicione novas colunas.</p>
+                </div>
+                <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Alternar tema">🌙</button>
             </div>
             <form id="new-card-form" class="new-card-form" autocomplete="off">
                 <label for="new-card-text" class="sr-only">Texto do novo card</label>
-                <input id="new-card-text" name="cardText" type="text" maxlength="120" placeholder="Novo card para 'A fazer'" required>
+                <input id="new-card-text" name="cardText" type="text" maxlength="120" placeholder="Adicione um novo Card" required>
                 <button type="submit">Criar card</button>
             </form>
         </header>
@@ -32,5 +35,24 @@
 
     <!-- Ponto de entrada da aplicação (módulo principal) -->
     <script type="module" src="./js/main.js"></script>
+
+    <!-- Polyfill: mobile-drag-drop permite usar a API nativa de drag-and-drop em touch devices -->
+    <!-- GitHub: https://github.com/timruffles/mobile-drag-drop -->
+    <script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.3.5"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.3.5/default.css">
+
+    <script>
+        // Verifica se o polyfill foi carregado
+        if (window.MobileDragDrop) {
+            MobileDragDrop.polyfill({
+                // Mudei para 250! Isso dá 1/4 de segundo para o botão registrar o clique normal
+                holdToDrag: 250,
+
+                // Isso faz a "sombra" do card seguir o seu dedo no celular
+                dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride
+            });
+        }
+    </script>
+
 </body>
 </html>
