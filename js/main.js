@@ -1,13 +1,18 @@
 import { createStore } from "./state.js";
 import { renderBoard } from "./render.js";
 import { bindInteractions } from "./interactions.js";
+import { initTheme, setupThemeToggle } from "./theme.js";
 
 // Inicializa a aplicação conectando DOM, estado, renderização e eventos.
 function initKanbanApp() {
+    // Inicializa sistema de tema escuro/claro.
+    initTheme();
+    
     // Elementos principais usados pelo app.
     const boardElement = document.querySelector("#board");
     const formElement = document.querySelector("#new-card-form");
     const addColumnButton = document.querySelector("#add-column-button");
+    const themeToggleButton = document.querySelector("#theme-toggle");
 
     // Falha cedo se a estrutura HTML esperada não existir.
     if (!(boardElement instanceof HTMLElement)) {
@@ -20,6 +25,10 @@ function initKanbanApp() {
 
     if (!(addColumnButton instanceof HTMLButtonElement)) {
         throw new Error("Elemento #add-column-button não encontrado.");
+    }
+
+    if (!(themeToggleButton instanceof HTMLButtonElement)) {
+        throw new Error("Elemento #theme-toggle não encontrado.");
     }
 
     // Store central com o estado e as operações do Kanban.
@@ -41,6 +50,9 @@ function initKanbanApp() {
         addColumnButton,
         store
     });
+
+    // Configura o botão de toggle de tema.
+    setupThemeToggle(themeToggleButton);
 }
 
 // Ponto de boot do módulo.
