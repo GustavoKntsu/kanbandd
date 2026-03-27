@@ -71,11 +71,15 @@ function clearDragHighlights(boardElement) {
 // Conecta todos os eventos de interação entre DOM e store.
 export function bindInteractions({ boardElement, formElement, addColumnButton, store }) {
     const cardInput = formElement.querySelector("#new-card-text");
+    const createCardButton = formElement.querySelector("button[type='submit']");
+    const isTouchDevice = ("ontouchstart" in window) || navigator.maxTouchPoints > 0;
+    let lastTouchActionAt = 0;
 
-    // Cria card ao enviar formulário.
-    formElement.addEventListener("submit", (event) => {
-        event.preventDefault();
+    function isGhostAction() {
+        return Date.now() - lastTouchActionAt < 450;
+    }
 
+    function createCardAction() {
         const state = store.getState();
         const firstColumn = state.columns[0];
         if (!firstColumn || !cardInput) {
@@ -85,12 +89,53 @@ export function bindInteractions({ boardElement, formElement, addColumnButton, s
         store.addCard(cardInput.value, firstColumn.id);
         cardInput.value = "";
         cardInput.focus();
+    }
+
+    function addColumnAction() {
+        store.addColumn("Nova coluna");
+    }
+
+    function markTouchActionNow() {
+        lastTouchActionAt = Date.now();
+    }
+
+    // Cria card ao enviar formulário.
+    formElement.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (isGhostAction()) {
+            return;
+        }
+
+        createCardAction();
     });
+
+    // Fallback mobile: usa touchend para não conflitar com o polyfill de drag,
+    // que intercepta touchstart globalmente. preventDefault evita o click fantasma.
+    if (isTouchDevice && createCardButton) {
+        createCardButton.addEventListener("touchend", (event) => {
+            event.preventDefault();
+            markTouchActionNow();
+            createCardAction();
+        }, { passive: false });
+    }
 
     // Cria uma nova coluna com título padrão.
     addColumnButton.addEventListener("click", () => {
-        store.addColumn("Nova coluna");
+        if (isGhostAction()) {
+            return;
+        }
+        addColumnAction();
     });
+
+    // Fallback mobile: idem ao createCardButton — touchend evita conflito com o polyfill.
+    if (isTouchDevice) {
+        addColumnButton.addEventListener("touchend", (event) => {
+            event.preventDefault();
+            markTouchActionNow();
+            addColumnAction();
+        }, { passive: false });
+    }
 
     // Remove card ou coluna ao clicar em botão de excluir.
     boardElement.addEventListener("click", (event) => {
@@ -164,6 +209,7 @@ export function bindInteractions({ boardElement, formElement, addColumnButton, s
             if (columnId) {
                 event.dataTransfer.effectAllowed = "move";
                 event.dataTransfer.setData("application/x-column-id", columnId);
+                event.dataTransfer.setData("text/plain", `column:${columnId}`);
                 columnElement.classList.add("column--dragging");
                 return;
             }
@@ -182,6 +228,7 @@ export function bindInteractions({ boardElement, formElement, addColumnButton, s
 
         event.dataTransfer.effectAllowed = "move";
         event.dataTransfer.setData("application/x-card-id", cardId);
+        event.dataTransfer.setData("text/plain", `card:${cardId}`);
         cardElement.classList.add("card--dragging");
     });
 
@@ -242,7 +289,11 @@ export function bindInteractions({ boardElement, formElement, addColumnButton, s
         event.preventDefault();
 
         // Verifica se é drop de coluna (reordenação de colunas).
-        const movedColumnId = event.dataTransfer.getData("application/x-column-id");
+        let movedColumnId = event.dataTransfer.getData("application/x-column-id");
+        const plainData = event.dataTransfer.getData("text/plain");
+        if (!movedColumnId && plainData.startsWith("column:")) {
+            movedColumnId = plainData.slice("column:".length);
+        }
         if (movedColumnId) {
             const state = store.getState();
             const columns = state.columns;
@@ -267,7 +318,10 @@ export function bindInteractions({ boardElement, formElement, addColumnButton, s
         }
 
         // Verifica se é drop de card (mover card para coluna).
-        const cardId = event.dataTransfer.getData("application/x-card-id");
+        let cardId = event.dataTransfer.getData("application/x-card-id");
+        if (!cardId && plainData.startsWith("card:")) {
+            cardId = plainData.slice("card:".length);
+        }
         if (cardId) {
             const columnId = getClosestColumnId(target);
             if (columnId) {
