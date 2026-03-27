@@ -1,11 +1,11 @@
 // Chave usada para persistir o estado no navegador.
 const STORAGE_KEY = "kanban-state-v1";
 
-// Cria IDs únicos para colunas e cards.
+// Cria ID's únicos com base na data e um número aleatório para evitar colisões.
 function createId(prefix) {
-    return `${prefix}-${crypto.randomUUID()}`;
+    // Usa números aleatórios + a data atual para garantir que o ID não se repita
+    return `${prefix}-${Math.random().toString(36).substring(2, 9)}-${Date.now()}`;
 }
-
 // Estado inicial padrão do quadro.
 function createInitialState() {
     return {
