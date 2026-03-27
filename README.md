@@ -43,7 +43,8 @@ Opcional com VS Code:
 - Pressione `Enter` para salvar edição inline.
 - Pressione `Esc` para cancelar edição inline.
 
-##Participantes do código:
+## Participantes do código:
+
 -Gustavo Kenji N. Tsukioka
 -Chrystian Alexandre Cardoso Tokio
 -Callebe Mendes Ribeiro
